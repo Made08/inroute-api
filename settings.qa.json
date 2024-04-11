@@ -1,0 +1,15 @@
+{
+    "DATABASE": {
+        "user": "postgres",
+        "password": "postgres",
+        "host": "localhost",
+        "port": 5442,
+        "db": "postgres"
+    },
+    "DEBUG": true,
+    "SECRET_KEY": "your_secret_key",
+    "OTHER_CONFIG": {
+        "example_setting": "value"
+    }
+}
+

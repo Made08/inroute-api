@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from api.v1.Pais import router as pais_router
+from api.v1.Depto import router as depto_router
 
 app = FastAPI(
     title="Api InRoute",
@@ -9,19 +10,17 @@ app = FastAPI(
     redoc_url="/redoc",  # URL para acceder a Redoc
 )
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def read_root():
-    return {"mensaje": "¡Bienvenido a la API de InRoute!"}
-
-# Aquí puedes incluir las importaciones y configuraciones necesarias para tu API
-# por ejemplo, importar y registrar los routers de otros módulos como `pais_router`
-# from v1.Pais import router as pais_router
-# app.include_router(pais_router, prefix="/v1/pais")
+    return {
+        "message": "¡Bienvenido a la API de InRoute!",
+        "description": "Esta es la API para gestionar los datos de la aplicación InRoute.",
+        "routes": "Explora las rutas en /docs para más información sobre los endpoints de la API."
+    }
 
 # Registrar el enrutador de la API de PAIS
 app.include_router(pais_router)
-
-# Puedes agregar otras rutas aquí si es necesario
+app.include_router(depto_router)
 
 # Inicia el servidor con Uvicorn
 if __name__ == "__main__":

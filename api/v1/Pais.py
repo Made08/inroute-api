@@ -1,28 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from models.Pais import Pais
+from data.Pais import Pais
+from models.Pais import PaisBase
 from config import SessionLocal
 from typing import List
-from datetime import datetime
-
 
 # Crear un enrutador con el prefijo "/v1/pais"
-router = APIRouter(prefix="/v1/pais")
-
-# Definir un modelo Pydantic para la tabla PAIS
-class PaisBase(BaseModel):
-    id: str
-    nombre: str
-    indicativo_telefonico: int
-    estado: int = 1
-    fecha_registro: datetime
-    fecha_actualizacion: datetime
-    usuario_id: str | None = None
-    ip_address: str | None = None
-
-    class Config:
-        from_attributes = True
+router = APIRouter(prefix="/v1/pais", tags=["Pais"])
 
 # Dependencia para obtener la sesión de la base de datos
 def get_db():
@@ -79,15 +63,21 @@ def delete_pais(pais_id: str, db: Session = Depends(get_db)):
     return {"detail": "País eliminado con éxito"}
 
 # Operación para filtrar países por un campo y valor
-@router.get("/filter/{field}/{value}")
+@router.get("/filter/{field}/{value}", response_model=List[PaisBase])
 def filter_paises(
     field: str,  # Argumento sin valor predeterminado
     value: str,  # Argumento sin valor predeterminado
     db: Session = Depends(get_db)  # Argumento con valor predeterminado (dependencia)
 ):
-    # Componer la consulta según el campo y el valor
-    if hasattr(Pais, field):
-        paises = db.query(Pais).filter(getattr(Pais, field) == value).all()
-        return paises
-    else:
+    # Valida existencia del campo
+    if not hasattr(Pais, field):
         raise HTTPException(status_code=400, detail="Campo de filtrado no válido")
+
+    # Utilizar SQLAlchemy para filtrar registros basados en el campo y valor dados
+    query = db.query(Pais).filter(getattr(Pais, field) == value)
+    resultados = query.all()
+
+    if not resultados:
+        raise HTTPException(status_code=404, detail="No se encontraron registros que coincidan con el filtro")
+
+    return resultados
