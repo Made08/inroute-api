@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 from api.v1.Pais import router as pais_router
 
-app = FastAPI()
+app = FastAPI(
+    title="Api InRoute",
+    description="Api DAO para el Proyecto InRoute",
+    version="1.0",
+    docs_url="/docs",  # URL para acceder a Swagger UI
+    redoc_url="/redoc",  # URL para acceder a Redoc
+)
 
 @app.get("/")
 def read_root():
