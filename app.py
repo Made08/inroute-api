@@ -1,26 +1,23 @@
-from flask import Flask
-from models import db
-from v1.pais import pais_v1_bp
-from v1.depto import depto_v1_bp
-from v1.ciudad import ciudad_v1_bp
+from fastapi import FastAPI
+from api.v1.Pais import router as pais_router
 
-def create_app():
-    app = Flask(__name__)
+app = FastAPI()
 
-    # Configuración de la base de datos
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/postgres'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+@app.get("/")
+def read_root():
+    return {"mensaje": "¡Bienvenido a la API de InRoute!"}
 
-    # Inicialización de la base de datos
-    db.init_app(app)
+# Aquí puedes incluir las importaciones y configuraciones necesarias para tu API
+# por ejemplo, importar y registrar los routers de otros módulos como `pais_router`
+# from v1.Pais import router as pais_router
+# app.include_router(pais_router, prefix="/v1/pais")
 
-    # Registro del blueprint para la versión 1 de la API
-    app.register_blueprint(pais_v1_bp, url_prefix='/v1/pais')
-    app.register_blueprint(depto_v1_bp, url_prefix='/v1/depto')
-    app.register_blueprint(ciudad_v1_bp, url_prefix='/v1/ciudad')
+# Registrar el enrutador de la API de PAIS
+app.include_router(pais_router)
 
-    return app
+# Puedes agregar otras rutas aquí si es necesario
 
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
+# Inicia el servidor con Uvicorn
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
