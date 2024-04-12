@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from data.Pais import Pais
+from models.DataModel import Pais
 from models.Pais import PaisBase
 from config import SessionLocal
 from typing import List

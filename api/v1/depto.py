@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from data.Depto import Depto
+from models.DataModel import Depto
 from models.Depto import DeptoBase
 from config import SessionLocal
 from typing import List, Optional
