@@ -19,7 +19,7 @@ def get_db():
 # Create a new Depto
 @router.post("/", response_model=DeptoBase)
 def create_depto(depto: DeptoBase, db: Session = Depends(get_db)):
-    db_depto = Depto(**depto.dict())
+    db_depto = Depto(**depto.model_dump())
     db.add(db_depto)
     db.commit()
     db.refresh(db_depto)
@@ -40,7 +40,7 @@ def update_depto(id: str, depto: DeptoBase, db: Session = Depends(get_db)):
     if not db_depto:
         raise HTTPException(status_code=404, detail="Depto not found")
     
-    for key, value in depto.dict().items():
+    for key, value in depto.model_dump().items():
         setattr(db_depto, key, value)
         
     db.commit()
@@ -65,7 +65,7 @@ def read_deptos(db: Session = Depends(get_db)):
 
 @router.get("/filter/{field}/{value}", response_model=List[DeptoBase])
 def filter_deptos(
-        field: str,  # Argumento sin valor predeterminado
+    field: str,  # Argumento sin valor predeterminado
     value: str,  # Argumento sin valor predeterminado
     db: Session = Depends(get_db)  # Argumento con valor predeterminado (dependencia)
 ):
@@ -76,7 +76,7 @@ def filter_deptos(
     # Utilizar SQLAlchemy para filtrar registros basados en el campo y valor dados
     query = db.query(Depto).filter(getattr(Depto, field) == value)
     resultados = query.all()
-    
+
     if not resultados:
         raise HTTPException(status_code=404, detail="No se encontraron registros que coincidan con el filtro")
 

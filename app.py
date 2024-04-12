@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from api.v1.Pais import router as pais_router
 from api.v1.Depto import router as depto_router
+from api.v1.Ciudad import router as ciudad_router
 
 app = FastAPI(
     title="Api InRoute",
@@ -21,6 +22,7 @@ def read_root():
 # Registrar el enrutador de la API de PAIS
 app.include_router(pais_router)
 app.include_router(depto_router)
+app.include_router(ciudad_router)
 
 # Inicia el servidor con Uvicorn
 if __name__ == "__main__":

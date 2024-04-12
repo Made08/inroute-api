@@ -19,7 +19,7 @@ def get_db():
 # Operación para crear un nuevo país
 @router.post("/", response_model=PaisBase)
 def create_pais(pais: PaisBase, db: Session = Depends(get_db)):
-    db_pais = Pais(**pais.dict())
+    db_pais = Pais(**pais.model_dump())
     db.add(db_pais)
     db.commit()
     db.refresh(db_pais)
@@ -46,7 +46,7 @@ def update_pais(pais_id: str, pais: PaisBase, db: Session = Depends(get_db)):
     if db_pais is None:
         raise HTTPException(status_code=404, detail="País no encontrado")
     # Actualizar los campos del país existente con los valores del modelo recibido
-    for key, value in pais.dict().items():
+    for key, value in pais.model_dump().items():
         setattr(db_pais, key, value)
     db.commit()
     db.refresh(db_pais)
